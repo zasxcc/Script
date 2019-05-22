@@ -4,15 +4,13 @@ from tkinter import font
 from tkinter import messagebox
 
 import http.client
-from xml.dom.minidom import parse, parseString
+from xml.etree import ElementTree
+import urllib.parse
 import urllib.request
 import Gmail
 
 
-
 class MountainSearch:
-    conn = None
-
     def __init__(self):
         self.InitTitle()
 
@@ -34,18 +32,24 @@ class MountainSearch:
         self.Twindow.mainloop()
 
     def nextWindow(self):           # 검색 버튼 누르면 실행되는 함수
-        self.MountainName = self.e.get()        # 타이틀에서 산 이름 받아옴
+        self.MountainName = self.e.get()       # 타이틀에서 산 이름 받아옴
+        self.mntnnm = urllib.parse.quote(self.e.get())
 
         conn = http.client.HTTPConnection("openapi.forest.go.kr")
         url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
         url += "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D"
         url += "&mntnNm="
-        url += self.MountainName
+        url += self.mntnnm
 
         conn.request("GET", url)
         req = conn.getresponse()
-        print(req.status, req.reason)
-        print(req.read().decode('utf-8'))
+        #print(req.status, req.reason)
+        #print(req.read().decode('utf-8'))
+        self.tree = ElementTree.fromstring(req.read().decode('utf-8'))
+        print(self.tree)
+
+
+
 
 
         self.Twindow.destroy()   # 기존에 있던 타이틀 윈도우 파괴
@@ -59,8 +63,8 @@ class MountainSearch:
 
         Label(self.window, text=self.MountainName).place(x=0, y=0)
 
-        Button(self.window, text="상세정보", width=10, command=self.B).place(x=0, y=30)
-        Button(self.window, text="소재지", width=10, command=self.B).place(x=0, y=60)
+        Button(self.window, text="상세정보", width=10, command=self.Information).place(x=0, y=30)
+        Button(self.window, text="소재지", width=10, command=self.Address).place(x=0, y=60)
         Button(self.window, text="대중교통정보", width=10, command=self.B).place(x=0, y=90)
         Button(self.window, text="주변관광정보", width=10, command=self.B).place(x=0, y=120)
         Button(self.window, text="산행포인트", width=10, command=self.B).place(x=0, y=150)
@@ -68,14 +72,25 @@ class MountainSearch:
         Button(self.window, text="E-Mail 보내기", width=10, command=Gmail.sendMail).place(x=0, y=210)
 
         scroll = Scrollbar(self.window)
-        text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
+        self.text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
         scroll.place(x=380, y=0, height=402)
-        text.place(x=80, y=0)
+        self.text.place(x=80, y=0)
 
         self.window.mainloop()
 
     def B(self):
         pass
+
+    def Address(self):
+        for item in self.tree.iter("item"):
+            self.MountainAddress = item.find("mntninfopoflc")
+            self.text.insert(1.0, self.MountainAddress.text + '\n')
+
+    def Information(self):
+        for item in self.tree.iter("item"):
+            self.MountainAddress = item.find("mntninfodtlinfocont")
+            self.text.insert(1.0, self.MountainAddress.text + '\n')
+
 
 
 MountainSearch()
