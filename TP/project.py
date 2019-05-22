@@ -2,12 +2,11 @@
 from tkinter import *
 from tkinter import font
 from tkinter import messagebox
-<<<<<<< HEAD
+
 import http.client
 from xml.dom.minidom import parse, parseString
-=======
 import Gmail
->>>>>>> a60507edcc3918057397e8568d3dedae5ab38dfe
+
 
 
 class MountainSearch:
