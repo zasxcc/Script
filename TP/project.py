@@ -4,10 +4,13 @@ from tkinter import font
 from tkinter import messagebox
 import http.client
 from xml.dom.minidom import parse, parseString
+import urllib.request
 import Gmail
 
 
 class MountainSearch:
+    conn = None
+
     def __init__(self):
         self.InitTitle()
 
@@ -31,12 +34,15 @@ class MountainSearch:
     def nextWindow(self):           # 검색 버튼 누르면 실행되는 함수
         self.MountainName = self.e.get()        # 타이틀에서 산 이름 받아옴
 
-        conn = http.client.HTTPSConnection("openapi.forest.go.kr")
-        url = "openapi/service/trailInfoService/getforeststoryservice?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D&mntnNm=%EC%A7%80%EB%A6%AC%EC%82%B0"
+        conn = http.client.HTTPConnection("openapi.forest.go.kr")
+        url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
+        url += "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D"
+        url += "&mntnNm="
+        url += self.MountainName
 
         conn.request("GET", url)
         req = conn.getresponse()
-        print(req.status,req.reason)
+        print(req.status, req.reason)
         print(req.read().decode('utf-8'))
 
 
