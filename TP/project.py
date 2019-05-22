@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import font
 from tkinter import messagebox
-import Gmail
 
 
 class MountainSearch:
@@ -44,7 +43,7 @@ class MountainSearch:
         Button(self.window, text="주변관광정보", width=10, command=self.B).place(x=0, y=120)
         Button(self.window, text="산행포인트", width=10, command=self.B).place(x=0, y=150)
         Button(self.window, text="100대명산", width=10, command=self.B).place(x=0, y=180)
-        Button(self.window, text="E-Mail 보내기", width=10, command=Gmail.sendMail).place(x=0, y=210)
+        Button(self.window, text="E-Mail 보내기", width=10, command=self.B).place(x=0, y=210)
 
         scroll = Scrollbar(self.window)
         text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
