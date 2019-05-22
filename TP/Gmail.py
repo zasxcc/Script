@@ -3,6 +3,8 @@ import mimetypes
 import mysmtplib
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
+from email import encoders
+import os
 
 #global value
 host = "smtp.gmail.com" # Gmail STMP 서버 주소.
@@ -24,6 +26,14 @@ htmlFD.close()
 
 # 만들었던 mime을 MIMEBase에 첨부 시킨다.
 msg.attach(HtmlPart)
+
+path = r'C:\Users\Park\Desktop\SCRIPT\chapter25.pptx'
+part = MIMEBase("application", "octet-stream")
+part.set_payload(open(path, 'rb').read())
+encoders.encode_base64(part)
+part.add_header('Content-Disposition', 'attachment; filename="%s"'%os.path.basename(path))
+
+msg.attach(part)
 
 # 메일을 발송한다.
 s = mysmtplib.MySMTP(host,port)
