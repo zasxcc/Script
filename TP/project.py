@@ -45,6 +45,11 @@ class MountainSearch:
         Button(self.window, text="100대명산", width=10, command=self.B).place(x=0, y=180)
         Button(self.window, text="E-Mail 보내기", width=10, command=self.B).place(x=0, y=210)
 
+        scroll = Scrollbar(self.window)
+        text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
+        scroll.place(x=380, y=0, height=402)
+        text.place(x=80, y=0)
+
         self.window.mainloop()
 
     def B(self):
