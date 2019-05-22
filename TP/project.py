@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 from tkinter import *
 from tkinter import font
 from tkinter import messagebox
+import http.client
+from xml.dom.minidom import parse, parseString
 
 
 class MountainSearch:
@@ -25,7 +28,17 @@ class MountainSearch:
         self.Twindow.mainloop()
 
     def nextWindow(self):           # 검색 버튼 누르면 실행되는 함수
-        self.MountainName = self.e.get()
+        self.MountainName = self.e.get()        # 타이틀에서 산 이름 받아옴
+
+        conn = http.client.HTTPSConnection("openapi.forest.go.kr")
+        url = "openapi/service/trailInfoService/getforeststoryservice?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D&mntnNm=%EC%A7%80%EB%A6%AC%EC%82%B0"
+
+        conn.request("GET", url)
+        req = conn.getresponse()
+        print(req.status,req.reason)
+        print(req.read().decode('utf-8'))
+
+
         self.Twindow.destroy()   # 기존에 있던 타이틀 윈도우 파괴
         self.initResult()        # 결과창 생성
 
