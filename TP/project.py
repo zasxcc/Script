@@ -94,6 +94,8 @@ class MountainSearch:
             self.MountainInfo.text = self.MountainInfo.text.replace('br /', '\n')
             self.MountainInfo.text = self.MountainInfo.text.replace('&lt;', '\n')
             self.MountainInfo.text = self.MountainInfo.text.replace('&gt;', '\n')
+            self.MountainInfo.text = self.MountainInfo.text.replace('&amp;', '\n')
+            self.MountainInfo.text = self.MountainInfo.text.replace('nbsp;', '\n')
 
             self.text.insert(1.0, self.MountainInfo.text)
             self.height = item.find("mntninfohght")
@@ -118,12 +120,16 @@ class MountainSearch:
             self.PTInfo.text = self.PTInfo.text.replace('br /', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('&lt;', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('&gt;', '\n')
+            self.PTInfo.text = self.PTInfo.text.replace('&amp;', '\n')
+            self.PTInfo.text = self.PTInfo.text.replace('nbsp;', '\n')
             self.text.insert(1.0, self.PTInfo.text)
 
             self.PTInfo2 = item.find("ptmntrcmmncoursdscrt")
             self.PTInfo2.text = self.PTInfo2.text.replace('<BR>', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('br /', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('&lt;', '\n')
+            self.PTInfo2.text = self.PTInfo2.text.replace('&amp;', '\n')
+            self.PTInfo2.text = self.PTInfo2.text.replace('nbsp;', '\n')
             self.text.insert(1.0, self.PTInfo2.text)
 
     def TourismInfo(self):
@@ -134,6 +140,8 @@ class MountainSearch:
             self.TourInfo.text = self.TourInfo.text.replace('br /', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('&lt;', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('&gt;', '\n')
+            self.TourInfo.text = self.TourInfo.text.replace('&amp;', '\n')
+            self.TourInfo.text = self.TourInfo.text.replace('nbsp;', '\n')
             self.text.insert(1.0, self.TourInfo.text)
 
     def HikingPoint(self):
@@ -144,6 +152,8 @@ class MountainSearch:
             self.HP.text = self.HP.text.replace('br /', '\n')
             self.HP.text = self.HP.text.replace('&lt;', '\n')
             self.HP.text = self.HP.text.replace('&gt;', '\n')
+            self.HP.text = self.HP.text.replace('&amp;', '\n')
+            self.HP.text = self.HP.text.replace('nbsp;', '\n')
             self.text.insert(1.0, self.HP.text)
 
     def SpecialMountain(self):
@@ -154,6 +164,8 @@ class MountainSearch:
             self.SM.text = self.SM.text.replace('br /', '\n')
             self.SM.text = self.SM.text.replace('&lt;', '\n')
             self.SM.text = self.SM.text.replace('&gt;', '\n')
+            self.SM.text = self.SM.text.replace('&amp;', '\n')
+            self.SM.text = self.SM.text.replace('nbsp;', '\n')
             self.text.insert(1.0, self.SM.text)
 
     def Survey(self):
@@ -164,6 +176,8 @@ class MountainSearch:
             self.Survey.text = self.Survey.text.replace('br /', '\n')
             self.Survey.text = self.Survey.text.replace('&lt;', '\n')
             self.Survey.text = self.Survey.text.replace('&gt;', '\n')
+            self.Survey.text = self.Survey.text.replace('&amp;', '\n')
+            self.Survey.text = self.Survey.text.replace('nbsp;', '\n')
             if self.Survey.text == '':
                 print("defeaf")
             else:
