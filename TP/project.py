@@ -48,14 +48,10 @@ class MountainSearch:
         self.tree = ElementTree.fromstring(req.read().decode('utf-8'))
         print(self.tree)
 
-
-
-
-
         self.Twindow.destroy()   # 기존에 있던 타이틀 윈도우 파괴
-        self.initResult()        # 결과창 생성
+        self.InitResult()        # 결과창 생성
 
-    def initResult(self):        # 결과창 생성
+    def InitResult(self):        # 결과창 생성
         self.window = Tk()
         self.window.title("검색 결과")
         self.window.geometry("400x402+700+100")
@@ -71,6 +67,9 @@ class MountainSearch:
         Button(self.window, text="100대명산", width=10, command=self.SpecialMountain).place(x=0, y=180)
         Button(self.window, text="개관", width=10, command=self.Survey).place(x=0, y=210)
         Button(self.window, text="E-Mail 보내기", width=10, command=Gmail.sendMail).place(x=0, y=240)
+        Button(self.window, text="지도", width=10, command=self.B).place(x=0, y=270)
+        Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
+        Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
 
         scroll = Scrollbar(self.window)
         self.text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
@@ -81,6 +80,10 @@ class MountainSearch:
 
     def B(self):
         pass
+
+    def reSearch(self):
+        self.window.destroy()
+        self.InitTitle()
 
     def Information(self):
         self.text.delete(1.0, 1000.0)
