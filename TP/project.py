@@ -14,7 +14,7 @@ class MountainSearch:
     def __init__(self):
         self.InitTitle()
 
-    def InitTitle(self):
+    def InitTitle(self):        # 타이틀 윈도우
         self.Twindow = Tk()
         self.Twindow.title("검색")
         self.Twindow.geometry("500x300+700+250")
@@ -43,10 +43,7 @@ class MountainSearch:
 
         conn.request("GET", url)
         req = conn.getresponse()
-        #print(req.status, req.reason)
-        #print(req.read().decode('utf-8'))
         self.tree = ElementTree.fromstring(req.read().decode('utf-8'))
-        print(self.tree)
 
         self.Twindow.destroy()   # 기존에 있던 타이틀 윈도우 파괴
         self.InitResult()        # 결과창 생성
