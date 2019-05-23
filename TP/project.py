@@ -14,7 +14,7 @@ class MountainSearch:
     def __init__(self):
         self.InitTitle()
 
-    def InitTitle(self):        # 타이틀 윈도우
+    def InitTitle(self):       # 타이틀 윈도우
         self.Twindow = Tk()
         self.Twindow.title("검색")
         self.Twindow.geometry("500x300+700+250")
