@@ -103,6 +103,8 @@ class MountainSearch:
         self.text.insert(1.0, "산의 부제 : " + self.sub_name.text + '\n\n')
         self.text.insert(1.0, self.name.text + '\n\n')
 
+        print(self.text.get(1.0, END))      # 텍스트 받기
+
     def Address(self):
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
