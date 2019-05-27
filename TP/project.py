@@ -189,6 +189,7 @@ class MountainSearch:
             self.Survey.text = self.Survey.text.replace('&gt;', '\n')
             self.Survey.text = self.Survey.text.replace('&amp;', '\n')
             self.Survey.text = self.Survey.text.replace('nbsp;', '\n')
+
             if self.Survey.text == '':
                 print("defeaf")
             else:
@@ -208,6 +209,9 @@ class MountainSearch:
         msg['Subject'] = "메일 제목"
         msg['From'] = senderAddr
         msg['To'] = recipientAddr
+
+        self.Information()      # 상세정보 누르지 않아도 여기서 다시 실행
+        
         global TEXT
         text = TEXT
 
