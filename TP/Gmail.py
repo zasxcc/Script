@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import mimetypes
+import tkinter
+from tkinter import filedialog
 import mysmtplib
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -42,7 +44,8 @@ def sendMail():
 
     msg.attach(TextPart)
 
-
+    global e, filname
+    filename = filedialog.askopenfilename(initialdir='path', title='select file', filetypes=(('jpeg file, ','*.jpg'), ('all files', '*.*')))
     #path = r'C:\Users\Park\Desktop\SCRIPT\chapter25.pptx'
     #part = MIMEBase("application", "octet-stream")
     #part.set_payload(open(path, 'rb').read())
