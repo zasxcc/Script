@@ -18,6 +18,7 @@ import os
 
 
 TEXT= ""
+MAIL = ""
 
 class MountainSearch:
     def __init__(self):
@@ -198,22 +199,39 @@ class MountainSearch:
 
     def sendMail(self):
         # global value
+        global MAIL
+        self.Twindow = Tk()
+        self.Twindow.title("검색")
+        self.Twindow.geometry("150x100+700+250")
+        self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
+
+        Button(self.Twindow, text="보내기",
+               font=self.TempFont, command=self.mailSend).place(x=50, y=50)
+
+        self.e2 = Entry(self.Twindow, font=self.TempFont)
+        self.e2.place(x=10, y=10, width=120, height=20)
+
+
+    def mailSend(self):
+        global MAIL
+        global TEXT
+        MAIL = self.e2.get()
         host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
         port = "587"
         htmlFileName = "logo.html"
 
         senderAddr = "zasxcc@gmail.com"  # 보내는 사람 email 주소.
-        recipientAddr = "zasxcc@naver.com"  # 받는 사람 email 주소.
+        recipientAddr = MAIL  # 받는 사람 email 주소.
 
         msg = MIMEBase("multipart", "mixed")
 
-        msg['Subject'] = "메일 제목"
+        msg['Subject'] = "산 상세정보"
         msg['From'] = senderAddr
         msg['To'] = recipientAddr
 
         self.Information()      # 상세정보 누르지 않아도 여기서 다시 실행
         
-        global TEXT
+
         text = TEXT
 
         # MIME 문서를 생성합니다.
