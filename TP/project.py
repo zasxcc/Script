@@ -76,6 +76,7 @@ class MountainSearch:
         Button(self.window, text="지도", width=10, command=self.B).place(x=0, y=270)
         Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
+        Button(self.window, text="즐겨찾기", width=10, command=self.Favorites).place(x=0, y=360)
 
         scroll = Scrollbar(self.window)
         self.text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
@@ -242,5 +243,7 @@ class MountainSearch:
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
 
+    def Favorites(self):
+        pass
 
 MountainSearch()
