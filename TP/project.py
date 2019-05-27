@@ -16,6 +16,8 @@ from email.mime.image import MIMEImage
 from email import encoders
 import os
 
+import ddd
+
 
 TEXT= ""
 MAIL = ""
@@ -61,7 +63,7 @@ class MountainSearch:
     def InitResult(self):        # 결과창 생성
         self.window = Tk()
         self.window.title("검색 결과")
-        self.window.geometry("400x402+700+100")
+        self.window.geometry("800x402+700+100")
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
         Label(self.window, text=self.MountainName).place(x=0, y=0)
@@ -74,7 +76,7 @@ class MountainSearch:
         Button(self.window, text="100대명산", width=10, command=self.SpecialMountain).place(x=0, y=180)
         Button(self.window, text="개관", width=10, command=self.Survey).place(x=0, y=210)
         Button(self.window, text="E-Mail 보내기", width=10, command=self.sendMail).place(x=0, y=240)
-        Button(self.window, text="지도", width=10, command=self.B).place(x=0, y=270)
+        Button(self.window, text="지도", width=10, command=self.Map).place(x=0, y=270)
         Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
         Button(self.window, text="즐겨찾기", width=10, command=self.Favorites).place(x=0, y=360)
@@ -267,5 +269,26 @@ class MountainSearch:
 
     def Favorites(self):
         pass
+
+    def Map(self):
+        from io import BytesIO
+        import urllib
+        import urllib.request
+        from PIL import Image, ImageTk
+
+        # openapi로 이미지 url을 가져옴.
+        url = "http://tong.visitkorea.or.kr/cms/resource/74/2396274_image2_1.JPG"
+        with urllib.request.urlopen(url) as u:
+            raw_data = u.read()
+
+        im = Image.open(BytesIO(raw_data))
+        image = ImageTk.PhotoImage(im)
+
+        label = Label(self.window, image=image, height=400, width=400)
+        #label.pack()
+        label.place(x=400, y=0)
+        print("ddaesf")
+
+
 
 MountainSearch()
