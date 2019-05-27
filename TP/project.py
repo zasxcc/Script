@@ -7,8 +7,17 @@ import http.client
 from xml.etree import ElementTree
 import urllib.parse
 import urllib.request
-import Gmail
 
+import mimetypes
+import mysmtplib
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email import encoders
+import os
+
+
+TEXT= ""
 
 class MountainSearch:
     def __init__(self):
@@ -63,7 +72,7 @@ class MountainSearch:
         Button(self.window, text="산행포인트", width=10, command=self.HikingPoint).place(x=0, y=150)
         Button(self.window, text="100대명산", width=10, command=self.SpecialMountain).place(x=0, y=180)
         Button(self.window, text="개관", width=10, command=self.Survey).place(x=0, y=210)
-        Button(self.window, text="E-Mail 보내기", width=10, command=Gmail.sendMail).place(x=0, y=240)
+        Button(self.window, text="E-Mail 보내기", width=10, command=self.sendMail).place(x=0, y=240)
         Button(self.window, text="지도", width=10, command=self.B).place(x=0, y=270)
         Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
@@ -104,6 +113,9 @@ class MountainSearch:
         self.text.insert(1.0, self.name.text + '\n\n')
 
         print(self.text.get(1.0, END))      # 텍스트 받기
+        global TEXT
+        TEXT = self.text.get(1.0, END)
+        print(type(self.text.get(1.0, END)))
 
     def Address(self):
         self.text.delete(1.0, 1000.0)
@@ -182,9 +194,53 @@ class MountainSearch:
             else:
                 self.text.insert(1.0, self.Survey.text)
 
+    def sendMail(self):
+        # global value
+        host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
+        port = "587"
+        htmlFileName = "logo.html"
 
+        senderAddr = "zasxcc@gmail.com"  # 보내는 사람 email 주소.
+        recipientAddr = "zasxcc@naver.com"  # 받는 사람 email 주소.
 
+        msg = MIMEBase("multipart", "mixed")
 
+        msg['Subject'] = "메일 제목"
+        msg['From'] = senderAddr
+        msg['To'] = recipientAddr
+        global TEXT
+        text = TEXT
+
+        # MIME 문서를 생성합니다.
+        htmlFD = open(htmlFileName, 'rb')
+        # HtmlPart = MIMEText(htmlFD.read(),'html', _charset = 'UTF-8' )
+
+        TextPart = MIMEText(text, 'html', _charset='UTF-8')
+        htmlFD.close()
+
+        # 만들었던 mime을 MIMEBase에 첨부 시킨다.
+        # msg.attach(HtmlPart)
+
+        msg.attach(TextPart)
+
+        # global e, filname
+        # filename = filedialog.askopenfilename(initialdir='path', title='select file', filetypes=(('jpeg file, ','*.jpg'), ('all files', '*.*')))
+        # path = r'C:\Users\Park\Desktop\SCRIPT\chapter25.pptx'
+        # part = MIMEBase("application", "octet-stream")
+        # part.set_payload(open(path, 'rb').read())
+        # encoders.encode_base64(part)
+        # part.add_header('Content-Disposition', 'attachment; filename="%s"'%os.path.basename(path))
+
+        # msg.attach(part)
+
+        # 메일을 발송한다.
+        s = mysmtplib.MySMTP(host, port)
+        # s.set_debuglevel(1)        # 디버깅이 필요할 경우 주석을 푼다.
+        s.ehlo()
+        s.starttls()
+        s.login("zasxcc@gmail.com", "dlsgur932!")
+        s.sendmail(senderAddr, [recipientAddr], msg.as_string())
+        s.close()
 
 
 MountainSearch()
