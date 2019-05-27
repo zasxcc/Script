@@ -200,16 +200,16 @@ class MountainSearch:
     def sendMail(self):
         # global value
         global MAIL
-        self.Twindow = Tk()
-        self.Twindow.title("검색")
-        self.Twindow.geometry("150x100+700+250")
-        self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
+        self.Twindow2 = Tk()
+        self.Twindow2.title("검색")
+        self.Twindow2.geometry("250x100+700+250")
+        self.TempFont2 = font.Font(size=5, weight='bold', family='Consolas')
 
-        Button(self.Twindow, text="보내기",
-               font=self.TempFont, command=self.mailSend).place(x=50, y=50)
+        Button(self.Twindow2, text="보내기",
+               font=self.TempFont2, command=self.mailSend).place(x=50, y=50)
 
-        self.e2 = Entry(self.Twindow, font=self.TempFont)
-        self.e2.place(x=10, y=10, width=120, height=20)
+        self.e2 = Entry(self.Twindow2, font=self.TempFont2)
+        self.e2.place(x=10, y=10, width=200, height=30)
 
 
     def mailSend(self):
