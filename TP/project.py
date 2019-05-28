@@ -63,7 +63,7 @@ class MountainSearch:
     def InitResult(self):        # 결과창 생성
         self.window = Tk()
         self.window.title("검색 결과")
-        self.window.geometry("800x402+700+100")
+        self.window.geometry("400x402+700+100")
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
         Label(self.window, text=self.MountainName).place(x=0, y=0)
@@ -271,24 +271,30 @@ class MountainSearch:
         pass
 
     def Map(self):
-        from io import BytesIO
-        import urllib
-        import urllib.request
-        from PIL import Image, ImageTk
+        import requests
+        import webview
+        import folium
 
-        # openapi로 이미지 url을 가져옴.
-        url = "http://tong.visitkorea.or.kr/cms/resource/74/2396274_image2_1.JPG"
-        with urllib.request.urlopen(url) as u:
-            raw_data = u.read()
+        self.URL = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBFVqFYHLQNOYuSVfkiHCv1GkyfUpnpAIY' \
+              '&sensor=false&language=ko&address={}'.format(self.MountainName)
 
-        im = Image.open(BytesIO(raw_data))
-        image = ImageTk.PhotoImage(im)
+        self.response = requests.get(self.URL)
 
-        label = Label(self.window, image=image, height=400, width=400)
-        #label.pack()
-        label.place(x=400, y=0)
-        print("ddaesf")
+        self.data = self.response.json()
 
+        self.lat = self.data['results'][0]['geometry']['location']['lat']
+        self.lng = self.data['results'][0]['geometry']['location']['lng']
+
+        self.map_osm = folium.Map(location=[self.lat, self.lng])
+        folium.Marker([self.lat, self.lng], popup=self.MountainName).add_to(self.map_osm)
+        self.map_osm.save('SearchResultMap.html')
+
+        self.map_url = 'https://www.google.co.kr/maps/search/' + self.MountainName + '/@' + str(self.lat) + ',' + str(self.lng) + ',12z'
+
+        webview.create_window('Google Map', self.map_url, width=1280, height=720)
+        # google map api로 경도 위도 받아와 foliun으로 email 전송을 위한 html 파일 저장.
+        # 지도 버튼 누르면 웹뷰 윈도우로 아예 구글 맵 검색되도록 구현.
+        # 웹뷰 윈도우가 생성되면 기존 Tk 윈도우가 응답하지 않는 문제가 있음.
 
 
 MountainSearch()
