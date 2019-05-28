@@ -20,26 +20,62 @@ import os
 TEXT= ""
 MAIL = ""
 
+
 class MountainSearch:
     def __init__(self):
         self.InitTitle()
 
     def InitTitle(self):       # 타이틀 윈도우
         self.Twindow = Tk()
+
+        self.f1 = PhotoImage(file="anime01.png")
+        self.f2 = PhotoImage(file="anime02.png")
+        self.f3 = PhotoImage(file="anime03.png")
+        self.f4 = PhotoImage(file="anime04.png")
+        self.f5 = PhotoImage(file="anime05.png")
+        self.f6 = PhotoImage(file="anime06.png")
+        self.n = 0
+        self.fn = self.f1
+
         self.Twindow.title("검색")
-        self.Twindow.geometry("500x300+700+250")
-        self.Tcanvas = Canvas(self.Twindow, width=500, height=300, relief="solid", bd=1)
-        self.image = PhotoImage(file="mountain.gif")
-        self.Tcanvas.create_image(250, 150, image=self.image)
+        self.Twindow.geometry("480x640+700+250")
+        self.Tcanvas = Canvas(self.Twindow, width=480, height=640, relief="solid", bd=1)
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
         Button(self.Twindow, text="검색",
-               font=self.TempFont, command=self.nextWindow).place(x=295, y=150)
+               font=self.TempFont, command=self.nextWindow).place(x=295, y=250)
         self.e = Entry(self.Twindow, font=self.TempFont)
-        self.e.place(x=150, y=150, width=140, height=40)
+        self.e.place(x=150, y=250, width=140, height=40)
+
+        self.Twindow.after(0, self.Animation)
 
         self.Tcanvas.pack()
         self.Twindow.mainloop()
+
+    def Animation(self):
+        if 0 <= self.n < 2:
+            self.fn = self.f1
+            self.n += 1
+        elif 2 <= self.n < 4:
+            self.fn = self.f2
+            self.n += 1
+        elif 4 <= self.n < 6:
+            self.fn = self.f3
+            self.n += 1
+        elif 6 <= self.n < 8:
+            self.fn = self.f4
+            self.n += 1
+        elif 8 <= self.n < 10:
+            self.fn = self.f5
+            self.n += 1
+        elif 10 <= self.n < 12:
+            self.fn = self.f6
+            self.n += 1
+        elif self.n == 12:
+            self.n = 0
+
+        self.Tcanvas.create_image(240, 320, image=self.fn)
+        self.Twindow.after(120, self.Animation)
 
     def nextWindow(self):           # 검색 버튼 누르면 실행되는 함수
         self.MountainName = self.e.get()       # 타이틀에서 산 이름 받아옴
@@ -74,7 +110,7 @@ class MountainSearch:
         Button(self.window, text="100대명산", width=10, command=self.SpecialMountain).place(x=0, y=180)
         Button(self.window, text="개관", width=10, command=self.Survey).place(x=0, y=210)
         Button(self.window, text="E-Mail 보내기", width=10, command=self.sendMail).place(x=0, y=240)
-        Button(self.window, text="지도", width=10, command=self.B).place(x=0, y=270)
+        Button(self.window, text="지도", width=10, command=self.Map).place(x=0, y=270)
         Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
         Button(self.window, text="즐겨찾기", width=10, command=self.Favorites).place(x=0, y=360)
@@ -201,15 +237,15 @@ class MountainSearch:
         # global value
         global MAIL
         self.Twindow2 = Tk()
-        self.Twindow2.title("검색")
-        self.Twindow2.geometry("250x100+700+250")
+        self.Twindow2.title("이메일 주소 입력")
+        self.Twindow2.geometry("300x100+700+250")
         self.TempFont2 = font.Font(size=5, weight='bold', family='Consolas')
 
         Button(self.Twindow2, text="보내기",
-               font=self.TempFont2, command=self.mailSend).place(x=50, y=50)
+               font=self.TempFont2, command=self.mailSend).place(x=120, y=50)
 
         self.e2 = Entry(self.Twindow2, font=self.TempFont2)
-        self.e2.place(x=10, y=10, width=200, height=30)
+        self.e2.place(x=10, y=10, width=280, height=30)
 
 
     def mailSend(self):
@@ -230,7 +266,22 @@ class MountainSearch:
         msg['To'] = recipientAddr
 
         self.Information()      # 상세정보 누르지 않아도 여기서 다시 실행
-        
+
+        #####################
+        import requests
+        import folium
+
+        self.URL = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBFVqFYHLQNOYuSVfkiHCv1GkyfUpnpAIY' \
+                   '&sensor=false&language=ko&address={}'.format(self.MountainName)
+        self.response = requests.get(self.URL)
+        self.data = self.response.json()
+        self.lat = self.data['results'][0]['geometry']['location']['lat']
+        self.lng = self.data['results'][0]['geometry']['location']['lng']
+        self.map_osm = folium.Map(location=[self.lat, self.lng])
+        folium.Marker([self.lat, self.lng], popup=self.MountainName).add_to(self.map_osm)
+        self.map_osm.save('SearchResultMap.html')
+        #####################
+        # 이 부분에서 지도 버튼을 누르지 않아도 folium을 이용한 html파일 생성.
 
         text = TEXT
 
@@ -267,5 +318,32 @@ class MountainSearch:
 
     def Favorites(self):
         pass
+
+    def Map(self):
+        import requests
+        import webview
+        import folium
+
+        self.URL = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBFVqFYHLQNOYuSVfkiHCv1GkyfUpnpAIY' \
+              '&sensor=false&language=ko&address={}'.format(self.MountainName)
+
+        self.response = requests.get(self.URL)
+
+        self.data = self.response.json()
+
+        self.lat = self.data['results'][0]['geometry']['location']['lat']
+        self.lng = self.data['results'][0]['geometry']['location']['lng']
+
+        self.map_osm = folium.Map(location=[self.lat, self.lng])
+        folium.Marker([self.lat, self.lng], popup=self.MountainName).add_to(self.map_osm)
+        self.map_osm.save('SearchResultMap.html')
+
+        self.map_url = 'https://www.google.co.kr/maps/search/' + self.MountainName + '/@' + str(self.lat) + ',' + str(self.lng) + ',12z'
+
+        webview.create_window('Google Map', self.map_url, width=1280, height=720)
+        # google map api로 경도 위도 받아와 foliun으로 email 전송을 위한 html 파일 저장.
+        # 지도 버튼 누르면 웹뷰 윈도우로 아예 구글 맵 검색되도록 구현.
+        # 웹뷰 윈도우가 생성되면 기존 Tk 윈도우가 응답하지 않는 문제가 있음.
+
 
 MountainSearch()
