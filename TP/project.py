@@ -20,26 +20,62 @@ import os
 TEXT= ""
 MAIL = ""
 
+
 class MountainSearch:
     def __init__(self):
         self.InitTitle()
 
     def InitTitle(self):       # 타이틀 윈도우
         self.Twindow = Tk()
+
+        self.f1 = PhotoImage(file="anime01.png")
+        self.f2 = PhotoImage(file="anime02.png")
+        self.f3 = PhotoImage(file="anime03.png")
+        self.f4 = PhotoImage(file="anime04.png")
+        self.f5 = PhotoImage(file="anime05.png")
+        self.f6 = PhotoImage(file="anime06.png")
+        self.n = 0
+        self.fn = self.f1
+
         self.Twindow.title("검색")
-        self.Twindow.geometry("500x300+700+250")
-        self.Tcanvas = Canvas(self.Twindow, width=500, height=300, relief="solid", bd=1)
-        self.image = PhotoImage(file="mountain.gif")
-        self.Tcanvas.create_image(250, 150, image=self.image)
+        self.Twindow.geometry("480x640+700+250")
+        self.Tcanvas = Canvas(self.Twindow, width=480, height=640, relief="solid", bd=1)
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
         Button(self.Twindow, text="검색",
-               font=self.TempFont, command=self.nextWindow).place(x=295, y=150)
+               font=self.TempFont, command=self.nextWindow).place(x=295, y=250)
         self.e = Entry(self.Twindow, font=self.TempFont)
-        self.e.place(x=150, y=150, width=140, height=40)
+        self.e.place(x=150, y=250, width=140, height=40)
+
+        self.Twindow.after(0, self.Animation)
 
         self.Tcanvas.pack()
         self.Twindow.mainloop()
+
+    def Animation(self):
+        if 0 <= self.n < 2:
+            self.fn = self.f1
+            self.n += 1
+        elif 2 <= self.n < 4:
+            self.fn = self.f2
+            self.n += 1
+        elif 4 <= self.n < 6:
+            self.fn = self.f3
+            self.n += 1
+        elif 6 <= self.n < 8:
+            self.fn = self.f4
+            self.n += 1
+        elif 8 <= self.n < 10:
+            self.fn = self.f5
+            self.n += 1
+        elif 10 <= self.n < 12:
+            self.fn = self.f6
+            self.n += 1
+        elif self.n == 12:
+            self.n = 0
+
+        self.Tcanvas.create_image(240, 320, image=self.fn)
+        self.Twindow.after(40, self.Animation)
 
     def nextWindow(self):           # 검색 버튼 누르면 실행되는 함수
         self.MountainName = self.e.get()       # 타이틀에서 산 이름 받아옴
