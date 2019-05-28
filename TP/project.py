@@ -16,8 +16,6 @@ from email.mime.image import MIMEImage
 from email import encoders
 import os
 
-import ddd
-
 
 TEXT= ""
 MAIL = ""
