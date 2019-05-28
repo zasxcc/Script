@@ -201,15 +201,15 @@ class MountainSearch:
         # global value
         global MAIL
         self.Twindow2 = Tk()
-        self.Twindow2.title("검색")
-        self.Twindow2.geometry("250x100+700+250")
+        self.Twindow2.title("이메일 주소 입력")
+        self.Twindow2.geometry("300x100+700+250")
         self.TempFont2 = font.Font(size=5, weight='bold', family='Consolas')
 
         Button(self.Twindow2, text="보내기",
-               font=self.TempFont2, command=self.mailSend).place(x=50, y=50)
+               font=self.TempFont2, command=self.mailSend).place(x=120, y=50)
 
         self.e2 = Entry(self.Twindow2, font=self.TempFont2)
-        self.e2.place(x=10, y=10, width=200, height=30)
+        self.e2.place(x=10, y=10, width=280, height=30)
 
 
     def mailSend(self):
@@ -230,7 +230,22 @@ class MountainSearch:
         msg['To'] = recipientAddr
 
         self.Information()      # 상세정보 누르지 않아도 여기서 다시 실행
-        
+
+        #####################
+        import requests
+        import folium
+
+        self.URL = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBFVqFYHLQNOYuSVfkiHCv1GkyfUpnpAIY' \
+                   '&sensor=false&language=ko&address={}'.format(self.MountainName)
+        self.response = requests.get(self.URL)
+        self.data = self.response.json()
+        self.lat = self.data['results'][0]['geometry']['location']['lat']
+        self.lng = self.data['results'][0]['geometry']['location']['lng']
+        self.map_osm = folium.Map(location=[self.lat, self.lng])
+        folium.Marker([self.lat, self.lng], popup=self.MountainName).add_to(self.map_osm)
+        self.map_osm.save('SearchResultMap.html')
+        #####################
+        # 이 부분에서 지도 버튼을 누르지 않아도 folium을 이용한 html파일 생성.
 
         text = TEXT
 
