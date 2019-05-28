@@ -254,7 +254,7 @@ class MountainSearch:
         MAIL = self.e2.get()
         host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
         port = "587"
-        htmlFileName = "logo.html"
+        htmlFileName = "SearchResultMap.html"
 
         senderAddr = "zasxcc@gmail.com"  # 보내는 사람 email 주소.
         recipientAddr = MAIL  # 받는 사람 email 주소.
@@ -287,13 +287,13 @@ class MountainSearch:
 
         # MIME 문서를 생성합니다.
         htmlFD = open(htmlFileName, 'rb')
-        # HtmlPart = MIMEText(htmlFD.read(),'html', _charset = 'UTF-8' )
+        HtmlPart = MIMEText(htmlFD.read(),'html', _charset = 'UTF-8' )
 
         TextPart = MIMEText(text, 'html', _charset='UTF-8')
         htmlFD.close()
 
         # 만들었던 mime을 MIMEBase에 첨부 시킨다.
-        # msg.attach(HtmlPart)
+        msg.attach(HtmlPart)
 
         msg.attach(TextPart)
 
