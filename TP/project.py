@@ -100,7 +100,7 @@ class MountainSearch:
         self.window.geometry("400x402+700+100")
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
-        Label(self.window, text=self.MountainName).place(x=0, y=0)
+        Label(self.window, text=self.MountainName).place(x=20, y=5)
 
         Button(self.window, text="상세정보", width=10, command=self.Information).place(x=0, y=30)
         Button(self.window, text="소재지", width=10, command=self.Address).place(x=0, y=60)
