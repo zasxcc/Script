@@ -38,7 +38,7 @@ class MountainSearch:
         self.fn = self.f1
 
         self.Twindow.title("검색")
-        self.Twindow.geometry("480x640+700+250")
+        self.Twindow.geometry("480x640+700+100")
         self.Tcanvas = Canvas(self.Twindow, width=480, height=640, relief="solid", bd=1)
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
@@ -98,6 +98,8 @@ class MountainSearch:
         self.window = Tk()
         self.window.title("검색 결과")
         self.window.geometry("400x402+700+100")
+        self.MapCanvas = Canvas(self.window, width=800, height=402)
+        self.MapCanvas.pack()
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
         Label(self.window, text=self.MountainName).place(x=20, y=5)
@@ -247,7 +249,6 @@ class MountainSearch:
         self.e2 = Entry(self.Twindow2, font=self.TempFont2)
         self.e2.place(x=10, y=10, width=280, height=30)
 
-
     def mailSend(self):
         global MAIL
         global TEXT
@@ -270,6 +271,8 @@ class MountainSearch:
         #####################
         import requests
         import folium
+        import pdfcrowd
+        import sys
 
         self.URL = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBFVqFYHLQNOYuSVfkiHCv1GkyfUpnpAIY' \
                    '&sensor=false&language=ko&address={}'.format(self.MountainName)
@@ -282,6 +285,30 @@ class MountainSearch:
         self.map_osm.save('SearchResultMap.html')
         #####################
         # 이 부분에서 지도 버튼을 누르지 않아도 folium을 이용한 html파일 생성.
+
+        ############################### html file to png file
+
+        try:
+            # create the API client instance
+            client = pdfcrowd.HtmlToImageClient('JanghoPark', '2abdd903f12f616c4f8d039230ee1bf1')
+
+            # configure the conversion
+            client.setOutputFormat('gif')
+            client.setScreenshotWidth(400)
+            client.setScreenshotHeight(400)
+
+            # run the conversion and write the result to a file
+            client.convertFileToFile('SearchResultMap.html', 'Searched_Result_Map.gif')
+        except pdfcrowd.Error as why:
+            # report the error
+            sys.stderr.write('Pdfcrowd Error: {}\n'.format(why))
+
+            # handle the exception here or rethrow and handle it at a higher level
+            raise
+
+        ################################
+
+
 
         text = TEXT
 
@@ -321,8 +348,9 @@ class MountainSearch:
 
     def Map(self):
         import requests
-        import webview
         import folium
+        import pdfcrowd
+        import sys
 
         self.URL = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBFVqFYHLQNOYuSVfkiHCv1GkyfUpnpAIY' \
               '&sensor=false&language=ko&address={}'.format(self.MountainName)
@@ -340,10 +368,46 @@ class MountainSearch:
 
         self.map_url = 'https://www.google.co.kr/maps/search/' + self.MountainName + '/@' + str(self.lat) + ',' + str(self.lng) + ',12z'
 
-        webview.create_window('Google Map', self.map_url, width=1280, height=720)
+        messagebox.showinfo("알림", "지도 그리는 중...")
+
+        ############################### html file to png file
+
+        try:
+            # create the API client instance
+            client = pdfcrowd.HtmlToImageClient('JanghoPark', '2abdd903f12f616c4f8d039230ee1bf1')
+
+            # configure the conversion
+            client.setOutputFormat('gif')
+            client.setScreenshotWidth(400)
+            client.setScreenshotHeight(400)
+
+            # run the conversion and write the result to a file
+            client.convertFileToFile('SearchResultMap.html', 'Searched_Result_Map.gif')
+        except pdfcrowd.Error as why:
+            # report the error
+            sys.stderr.write('Pdfcrowd Error: {}\n'.format(why))
+
+            # handle the exception here or rethrow and handle it at a higher level
+            raise
+
+        ################################
+
+        self.image = PhotoImage(file='Searched_Result_Map.gif')
+        self.window.geometry("800x402")
+        self.MapCanvas.create_image(600, 201, image=self.image)
+
+        messagebox.showinfo("알림", "지도가 완성되었습니다!")
+
+        Button(self.window, text="구글 지도 연동", overrelief="solid", width=15, command=self.WebViewer).place(x=600, y=350)
+
+
         # google map api로 경도 위도 받아와 foliun으로 email 전송을 위한 html 파일 저장.
         # 지도 버튼 누르면 웹뷰 윈도우로 아예 구글 맵 검색되도록 구현.
         # 웹뷰 윈도우가 생성되면 기존 Tk 윈도우가 응답하지 않는 문제가 있음.
+
+    def WebViewer(self):
+        import webview
+        webview.create_window('Google Map', self.map_url, width=1280, height=720)
 
 
 MountainSearch()
