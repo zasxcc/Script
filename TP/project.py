@@ -17,8 +17,9 @@ from email.mime.multipart import MIMEMultipart
 from email import encoders
 import os
 
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler  # import modules
 
-
+my_token = '726303271:AAHtmKdF9PEBV4uNxlY2DVfVuz1fyhuAlug'
 TEXT= ""
 MAIL = ""
 
@@ -115,7 +116,7 @@ class MountainSearch:
         Button(self.window, text="개관", width=10, command=self.Survey).place(x=0, y=210)
         Button(self.window, text="E-Mail 보내기", width=10, command=self.sendMail).place(x=0, y=240)
         Button(self.window, text="지도", width=10, command=self.Map).place(x=0, y=270)
-        Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
+        Button(self.window, text="텔레그램 봇", width=10, command=self.tele).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
         Button(self.window, text="산높이 그래프", width=10, command=self.Graph).place(x=0, y=360)
 
@@ -475,6 +476,33 @@ class MountainSearch:
 
     def on(self, event):
         self.GraphCanvas.configure(scrollregion=self.GraphCanvas.bbox("all"))
+
+    def tele(self):
+        self.Information()
+        updater = Updater(my_token)
+
+        message_handler = MessageHandler(Filters.text, get_message)
+
+        updater.dispatcher.add_handler(message_handler)
+
+        help_handler = CommandHandler('mnt', help_command) #텔레그램에 /mnt 라고하면
+        updater.dispatcher.add_handler(help_handler)
+
+        updater.start_polling(timeout=3, clean=True)
+
+        updater.idle()
+    # message reply function
+def get_message(bot, update):
+    reply_text = "["
+    reply_text += update.message.text
+    reply_text += "]"
+    reply_text += "는 모르는 명령어 입니다"
+    update.message.reply_text(reply_text)
+
+    # help reply function
+def help_command(bot, update):
+    global TEXT
+    update.message.reply_text(TEXT)
 
 
 MountainSearch()
