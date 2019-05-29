@@ -115,7 +115,7 @@ class MountainSearch:
         Button(self.window, text="지도", width=10, command=self.Map).place(x=0, y=270)
         Button(self.window, text="텔레그램 봇", width=10, command=self.B).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
-        Button(self.window, text="즐겨찾기", width=10, command=self.Favorites).place(x=0, y=360)
+        Button(self.window, text="산높이 그래프", width=10, command=self.Graph).place(x=0, y=360)
 
         scroll = Scrollbar(self.window)
         self.text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
@@ -343,9 +343,6 @@ class MountainSearch:
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
 
-    def Favorites(self):
-        pass
-
     def Map(self):
         import requests
         import folium
@@ -391,6 +388,8 @@ class MountainSearch:
             raise
 
         ################################
+        import time
+        time.sleep(1)       # 지도가 덜 그려지는 부분 딜레이 줘서 해결
 
         self.image = PhotoImage(file='Searched_Result_Map.gif')
         self.window.geometry("800x402")
@@ -408,6 +407,17 @@ class MountainSearch:
     def WebViewer(self):
         import webview
         webview.create_window('Google Map', self.map_url, width=1280, height=720)
+
+    def Graph(self):
+        self.f = open("100대산(중복제외97).txt", 'r+')
+        self.lst = []
+
+        for i in range(0, 97):
+            print(self.f.readline())
+            #self.lst += self.f.readline()
+            #print(self.lst)
+
+        self.f.close()
 
 
 MountainSearch()
