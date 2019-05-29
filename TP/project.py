@@ -350,7 +350,6 @@ class MountainSearch:
 
         messagebox.showinfo("Complete", "이메일 보내기 완료!")
 
-
     def Map(self):
         import requests
         import folium
@@ -396,8 +395,8 @@ class MountainSearch:
             raise
 
         ################################
-        import time
-        time.sleep(1)       # 지도가 덜 그려지는 부분 딜레이 줘서 해결
+        #import time
+        #time.sleep(5)       # 해결된 줄 알았는데 종종 잘려서 그러질 때가 있음
 
         self.image = PhotoImage(file='Searched_Result_Map.gif')
         self.window.geometry("800x402")
@@ -417,15 +416,65 @@ class MountainSearch:
         webview.create_window('Google Map', self.map_url, width=1280, height=720)
 
     def Graph(self):
-        self.f = open("100대산(중복제외97).txt", 'r+')
-        self.lst = []
+        # 그래프 그리는데, 95개 산의 높이 정보를 파싱하기 때문에 시간이 오래 걸림
+        self.f = open("100대산(중복제외95).txt", 'r+')
+        self.string = ''
+        self.string += self.f.read()
+        self.MountainList = []
+        self.MountainList += self.string.split('\n')
+        self.HeightList = []
+        self.NameList = []
 
-        for i in range(0, 97):
-            print(self.f.readline())
-            #self.lst += self.f.readline()
-            #print(self.lst)
+        conn = http.client.HTTPConnection("openapi.forest.go.kr")
+        graph_url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
+        graph_url += "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D"
+        graph_url += "&mntnNm="
+        url = ''
+
+        messagebox.showinfo("알림", "그래프 그리는 중...")
+
+        for i in range(len(self.MountainList)):
+            name = urllib.parse.quote(self.MountainList[i])
+            url += graph_url + name
+            conn.request("GET", url)
+            req = conn.getresponse()
+            graph_tree = ElementTree.fromstring(req.read().decode('utf-8'))
+            url = ''
+            for item in graph_tree.iter("item"):
+                try:
+                    self.HeightList.append(item.find("mntninfohght").text)
+                    self.NameList.append(item.find("mntnnm").text)
+                    break
+                except ValueError:
+                    pass
+
+        self.GraphWindow = Tk()
+        self.GraphWindow.title("100대 명산 높이 그래프")
+        self.GraphWindow.geometry("1280x680")
+        self.GraphCanvas = Canvas(self.GraphWindow, width=1280, height=670)
+        scrollbar = Scrollbar(self.GraphWindow, orient="horizontal", command=self.GraphCanvas.xview)
+        self.GraphCanvas.configure(xscrollcommand=scrollbar.set)
+        scrollbar.pack(side="bottom", fill="x")
+
+        interval = 20
+
+        for i in range(0, len(self.HeightList)):
+            self.GraphCanvas.create_rectangle(i * 10 + interval, 650, (i + 1) * 10 + interval, 650 - (int(self.HeightList[i]) * 0.3), outline="black", fill="blue")
+            self.GraphCanvas.create_text(i * 10 + interval + 5, 660, text=self.NameList[i])
+            self.GraphCanvas.create_text(i * 10 + interval + 5, 650 - (int(self.HeightList[i]) * 0.3) - 20, text=self.HeightList[i])
+            interval += 50
 
         self.f.close()
+        self.NameList.clear()
+        self.HeightList.clear()
+
+        self.GraphCanvas.pack()
+
+        self.GraphWindow.bind("<Configure>", self.on)
+        self.GraphWindow.mainloop()
+
+    def on(self, event):
+        self.GraphCanvas.configure(scrollregion=self.GraphCanvas.bbox("all"))
 
 
 MountainSearch()
