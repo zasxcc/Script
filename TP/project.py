@@ -13,8 +13,10 @@ import mysmtplib
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 from email import encoders
 import os
+
 
 
 TEXT= ""
@@ -255,12 +257,12 @@ class MountainSearch:
         MAIL = self.e2.get()
         host = "smtp.gmail.com"  # Gmail STMP 서버 주소.
         port = "587"
-        htmlFileName = "SearchResultMap.html"
+        messagebox.showinfo("Loading", "이메일 보내는 중...")
 
         senderAddr = "zasxcc@gmail.com"  # 보내는 사람 email 주소.
         recipientAddr = MAIL  # 받는 사람 email 주소.
 
-        msg = MIMEBase("multipart", "mixed")
+        msg = MIMEMultipart()
 
         msg['Subject'] = "산 상세정보"
         msg['From'] = senderAddr
@@ -306,24 +308,27 @@ class MountainSearch:
             # handle the exception here or rethrow and handle it at a higher level
             raise
 
+
+
         ################################
 
 
-
         text = TEXT
+        htmlFileName = "Searched_Result_Map.gif"
+        ig = 'Searched_Result_Map.gif'
 
         # MIME 문서를 생성합니다.
         htmlFD = open(htmlFileName, 'rb')
-        HtmlPart = MIMEText(htmlFD.read(),'html', _charset = 'UTF-8' )
-
+        igFD = open(ig, 'rb')
+        HtmlPart = MIMEText(htmlFD.read(),'gif', _charset = 'UTF-8' )
         TextPart = MIMEText(text, 'html', _charset='UTF-8')
+        igPart = MIMEImage(igFD.read(), 'gif', _charset='UTF-8')
         htmlFD.close()
-
+        igFD.close()
         # 만들었던 mime을 MIMEBase에 첨부 시킨다.
         msg.attach(HtmlPart)
-
         msg.attach(TextPart)
-
+        msg.attach(igPart)
         # global e, filname
         # filename = filedialog.askopenfilename(initialdir='path', title='select file', filetypes=(('jpeg file, ','*.jpg'), ('all files', '*.*')))
         # path = r'C:\Users\Park\Desktop\SCRIPT\chapter25.pptx'
@@ -342,6 +347,9 @@ class MountainSearch:
         s.login("zasxcc@gmail.com", "dlsgur932!")
         s.sendmail(senderAddr, [recipientAddr], msg.as_string())
         s.close()
+
+        messagebox.showinfo("Complete", "이메일 보내기 완료!")
+
 
     def Map(self):
         import requests
