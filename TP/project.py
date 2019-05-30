@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from tkinter import *
+from tkinter import ttk
 from tkinter import font
 from tkinter import messagebox
 
@@ -23,7 +24,6 @@ my_token = '726303271:AAHtmKdF9PEBV4uNxlY2DVfVuz1fyhuAlug'
 TEXT= ""
 MAIL = ""
 favoriteList = []
-favoriteIndex = 0
 
 
 class MountainSearch:
@@ -55,42 +55,25 @@ class MountainSearch:
 
         self.Twindow.after(0, self.Animation)
         
-        # 즐겨찾기 버튼 활성화
-        global favoriteIndex
-        for i in range(len(favoriteList)):
-            if 0 <= i < 5:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
-                    place(x=10, y=i * 40 + 400)
-                favoriteIndex = i
-            elif 5 <= i < 10:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
-                    place(x=110, y=i * 40 + 200)
-                favoriteIndex = i
-            elif 10 <= i < 15:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
-                    place(x=210, y=i * 40)
-                favoriteIndex = i
-            elif 15 <= i < 20:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
-                    place(x=310, y=i * 40 - 200)
-                favoriteIndex = i
-            elif 20 <= i < 25:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
-                    place(x=410, y=i * 40 - 400)
-                favoriteIndex = i
-        b = Button(self.Twindow, text="dd", command=self.Favorite)
-        
+        # 즐겨찾기
+        if len(favoriteList) > 0:
+            self.comboString = StringVar()
+            self.combobox = ttk.Combobox(self.Twindow, width=17, textvariable=self.comboString)
+            self.combobox['values'] = tuple(favoriteList)
+            self.combobox.place(x=150, y=350)
+            Button(self.Twindow, text="즐겨찾기 검색", command=self.FavoriteButton).place(x=295, y=350)
+
         self.Tcanvas.pack()
         self.Twindow.mainloop()
 
     def Favorite(self):
         global favoriteList
         favoriteList.append(self.MountainName)
+        messagebox.showinfo("알림", "즐겨찾기에 추가되었습니다.\n타이틀 화면에서 확인할 수 있습니다.")
 
     def FavoriteButton(self):
-        print(favoriteIndex)
-        self.MountainName = favoriteList[favoriteIndex]  # 타이틀에서 산 이름 받아옴
-        self.mntnnm = urllib.parse.quote(self.e.get())
+        self.MountainName = self.comboString.get()  # 타이틀에서 산 이름 받아옴
+        self.mntnnm = urllib.parse.quote(self.comboString.get())
 
         conn = http.client.HTTPConnection("openapi.forest.go.kr")
         url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
@@ -182,6 +165,7 @@ class MountainSearch:
         self.window.mainloop()
 
     def reSearch(self):
+        self.nameSave = self.MountainName
         self.window.destroy()
         self.InitTitle()
 
