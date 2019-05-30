@@ -22,6 +22,8 @@ from telegram.ext import Updater, MessageHandler, Filters, CommandHandler  # imp
 my_token = '726303271:AAHtmKdF9PEBV4uNxlY2DVfVuz1fyhuAlug'
 TEXT= ""
 MAIL = ""
+favoriteNum = 0
+favoriteList = []
 
 
 class MountainSearch:
@@ -53,8 +55,14 @@ class MountainSearch:
 
         self.Twindow.after(0, self.Animation)
 
+        for i in range(len(favoriteList)):
+            Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B).place(x = 295, y=350+i*50)
+
         self.Tcanvas.pack()
         self.Twindow.mainloop()
+
+    def B(self):
+        pass
 
     def Animation(self):
         if 0 <= self.n < 2:
@@ -103,7 +111,7 @@ class MountainSearch:
         self.window.iconbitmap(default='icon.ico')
         self.window.title("검색 결과")
         self.window.geometry("400x402+700+100")
-        self.MapCanvas = Canvas(self.window, width=800, height=402)
+        self.MapCanvas = Canvas(self.window, width=800, height=432)
         self.MapCanvas.pack()
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
@@ -121,18 +129,21 @@ class MountainSearch:
         Button(self.window, text="텔레그램 봇", width=10, command=self.tele).place(x=0, y=300)
         Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
         Button(self.window, text="산높이 그래프", width=10, command=self.Graph).place(x=0, y=360)
+        Button(self.window, text="즐겨찾기", width=10, command=self.Favorite).place(x=0, y=390)
 
         scroll = Scrollbar(self.window)
         self.text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
-        scroll.place(x=380, y=0, height=402)
+        scroll.place(x=380, y=0, height=432)
         self.text.place(x=80, y=0)
 
         self.L = []
 
         self.window.mainloop()
 
-    def B(self):
-        pass
+    def Favorite(self):
+        global favoriteList
+        favoriteList.append(self.MountainName)
+        print(favoriteList)
 
     def reSearch(self):
         self.window.destroy()
@@ -418,7 +429,7 @@ class MountainSearch:
             # configure the conversion
             client.setOutputFormat('gif')
             client.setScreenshotWidth(400)
-            client.setScreenshotHeight(400)
+            client.setScreenshotHeight(430)
 
             # run the conversion and write the result to a file
             client.convertFileToFile('SearchResultMap.html', 'Searched_Result_Map.gif')
@@ -434,8 +445,8 @@ class MountainSearch:
         #time.sleep(5)       # 해결된 줄 알았는데 종종 잘려서 그러질 때가 있음
 
         self.image = PhotoImage(file='Searched_Result_Map.gif')
-        self.window.geometry("800x402")
-        self.MapCanvas.create_image(600, 201, image=self.image)
+        self.window.geometry("800x432")
+        self.MapCanvas.create_image(600, 216, image=self.image)
 
         messagebox.showinfo("알림", "지도가 완성되었습니다!")
 
