@@ -127,6 +127,8 @@ class MountainSearch:
         scroll.place(x=380, y=0, height=402)
         self.text.place(x=80, y=0)
 
+        self.L = []
+
         self.window.mainloop()
 
     def B(self):
@@ -147,6 +149,10 @@ class MountainSearch:
             self.MountainInfo.text = self.MountainInfo.text.replace('&gt;', '\n')
             self.MountainInfo.text = self.MountainInfo.text.replace('&amp;', '\n')
             self.MountainInfo.text = self.MountainInfo.text.replace('nbsp;', '\n')
+            self.MountainInfo.text = self.MountainInfo.text.replace('<strong>&', '\n')
+            self.MountainInfo.text = self.MountainInfo.text.replace('</strong>', '\n')
+            self.MountainInfo.text = self.MountainInfo.text.replace('</p>', '\n')
+            self.MountainInfo.text = self.MountainInfo.text.replace('<p>', '\n')
 
             self.text.insert(1.0, self.MountainInfo.text)
             self.height = item.find("mntninfohght")
@@ -157,10 +163,10 @@ class MountainSearch:
         self.text.insert(1.0, "산의 부제 : " + self.sub_name.text + '\n\n')
         self.text.insert(1.0, self.name.text + '\n\n')
 
-        print(self.text.get(1.0, END))      # 텍스트 받기
+        #print(self.text.get(1.0, END))      # 텍스트 받기
         global TEXT
         TEXT = self.text.get(1.0, END)
-        print(type(self.text.get(1.0, END)))
+        #print(type(self.text.get(1.0, END)))
 
     def Address(self):
         self.text.delete(1.0, 1000.0)
@@ -172,38 +178,58 @@ class MountainSearch:
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
             self.PTInfo = item.find("pbtrninfodscrt")
+            self.L.append(self.PTInfo.text)
             self.PTInfo.text = self.PTInfo.text.replace('<BR>', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('br /', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('&lt;', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('&gt;', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('&amp;', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('nbsp;', '\n')
+            self.PTInfo.text = self.PTInfo.text.replace('<p>&', '\n')
+            self.PTInfo.text = self.PTInfo.text.replace('</p>', '\n')
             self.text.insert(1.0, self.PTInfo.text)
 
             self.PTInfo2 = item.find("ptmntrcmmncoursdscrt")
+            self.L.append(self.PTInfo2.text)
             self.PTInfo2.text = self.PTInfo2.text.replace('<BR>', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('br /', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('&lt;', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('&amp;', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('nbsp;', '\n')
+            self.PTInfo2.text = self.PTInfo2.text.replace('<p>&', '\n')
+            self.PTInfo2.text = self.PTInfo2.text.replace('</p>', '\n')
             self.text.insert(1.0, self.PTInfo2.text)
+
+        if self.L[0] == '':
+            self.text.insert(1.0, "대중 교통 정보가 없습니다.") # 수정 필요
+
+        self.L.clear()
 
     def TourismInfo(self):
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
             self.TourInfo = item.find("crcmrsghtnginfodscrt")
+            self.L.append(self.TourInfo.text)
             self.TourInfo.text = self.TourInfo.text.replace('<BR>', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('br /', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('&lt;', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('&gt;', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('&amp;', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('nbsp;', '\n')
+            self.TourInfo.text = self.TourInfo.text.replace('<p>&', '\n')
+            self.TourInfo.text = self.TourInfo.text.replace('</p>', '\n')
             self.text.insert(1.0, self.TourInfo.text)
+
+        if self.L[0] == '':
+            self.text.insert(1.0, "주변 관광 정보가 없습니다.")
+
+        self.L.clear()
 
     def HikingPoint(self):
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
             self.HP = item.find("hkngpntdscrt")
+            self.L.append(self.HP.text)
             self.HP.text = self.HP.text.replace('<BR>', '\n')
             self.HP.text = self.HP.text.replace('br /', '\n')
             self.HP.text = self.HP.text.replace('&lt;', '\n')
@@ -211,6 +237,12 @@ class MountainSearch:
             self.HP.text = self.HP.text.replace('&amp;', '\n')
             self.HP.text = self.HP.text.replace('nbsp;', '\n')
             self.text.insert(1.0, self.HP.text)
+
+        if self.L[0] == ' ':
+            self.text.insert(1.0, "산행 포인트 정보가 없습니다.")
+
+        self.L.clear()
+
 
     def SpecialMountain(self):
         self.text.delete(1.0, 1000.0)
@@ -436,6 +468,7 @@ class MountainSearch:
 
         messagebox.showinfo("알림", "그래프 그리는 중...")
 
+        # range 안의 len(self.MountainList)를 변경해 그래프 그리는 속도 조절할 수 있음. (ex. range(10))
         for i in range(len(self.MountainList)):
             name = urllib.parse.quote(self.MountainList[i])
             url += graph_url + name
