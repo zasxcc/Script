@@ -78,7 +78,8 @@ class MountainSearch:
                 Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
                     place(x=410, y=i * 40 - 400)
                 favoriteIndex = i
-
+        b = Button(self.Twindow, text="dd", command=self.Favorite)
+        
         self.Tcanvas.pack()
         self.Twindow.mainloop()
 
@@ -87,6 +88,7 @@ class MountainSearch:
         favoriteList.append(self.MountainName)
 
     def FavoriteButton(self):
+        print(favoriteIndex)
         self.MountainName = favoriteList[favoriteIndex]  # 타이틀에서 산 이름 받아옴
         self.mntnnm = urllib.parse.quote(self.e.get())
 
