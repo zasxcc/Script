@@ -22,7 +22,6 @@ from telegram.ext import Updater, MessageHandler, Filters, CommandHandler  # imp
 my_token = '726303271:AAHtmKdF9PEBV4uNxlY2DVfVuz1fyhuAlug'
 TEXT= ""
 MAIL = ""
-favoriteNum = 0
 favoriteList = []
 
 
@@ -54,12 +53,31 @@ class MountainSearch:
         self.e.place(x=150, y=250, width=140, height=40)
 
         self.Twindow.after(0, self.Animation)
-
+        
+        # 즐겨찾기 버튼 활성화
         for i in range(len(favoriteList)):
-            Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B).place(x = 295, y=350+i*50)
+            if 0 <= i < 5:
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                    place(x=10, y=i * 40 + 400)
+            elif 5 <= i < 10:
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                    place(x=110, y=i * 40 + 200)
+            elif 10 <= i < 15:
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                    place(x=210, y=i * 40)
+            elif 15 <= i < 20:
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                    place(x=310, y=i * 40 - 200)
+            elif 20 <= i < 25:
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                    place(x=410, y=i * 40 - 400)
 
         self.Tcanvas.pack()
         self.Twindow.mainloop()
+
+    def Favorite(self):
+        global favoriteList
+        favoriteList.append(self.MountainName)
 
     def B(self):
         pass
@@ -110,7 +128,7 @@ class MountainSearch:
         self.window = Tk()
         self.window.iconbitmap(default='icon.ico')
         self.window.title("검색 결과")
-        self.window.geometry("400x402+700+100")
+        self.window.geometry("400x432+700+100")
         self.MapCanvas = Canvas(self.window, width=800, height=432)
         self.MapCanvas.pack()
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
@@ -132,18 +150,13 @@ class MountainSearch:
         Button(self.window, text="즐겨찾기", width=10, command=self.Favorite).place(x=0, y=390)
 
         scroll = Scrollbar(self.window)
-        self.text = Text(self.window, width=41, height=30, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
+        self.text = Text(self.window, width=41, height=32, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
         scroll.place(x=380, y=0, height=432)
         self.text.place(x=80, y=0)
 
         self.L = []
 
         self.window.mainloop()
-
-    def Favorite(self):
-        global favoriteList
-        favoriteList.append(self.MountainName)
-        print(favoriteList)
 
     def reSearch(self):
         self.window.destroy()
