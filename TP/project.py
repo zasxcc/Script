@@ -23,6 +23,7 @@ my_token = '726303271:AAHtmKdF9PEBV4uNxlY2DVfVuz1fyhuAlug'
 TEXT= ""
 MAIL = ""
 favoriteList = []
+favoriteIndex = 0
 
 
 class MountainSearch:
@@ -55,22 +56,28 @@ class MountainSearch:
         self.Twindow.after(0, self.Animation)
         
         # 즐겨찾기 버튼 활성화
+        global favoriteIndex
         for i in range(len(favoriteList)):
             if 0 <= i < 5:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
                     place(x=10, y=i * 40 + 400)
+                favoriteIndex = i
             elif 5 <= i < 10:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
                     place(x=110, y=i * 40 + 200)
+                favoriteIndex = i
             elif 10 <= i < 15:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
                     place(x=210, y=i * 40)
+                favoriteIndex = i
             elif 15 <= i < 20:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
                     place(x=310, y=i * 40 - 200)
+                favoriteIndex = i
             elif 20 <= i < 25:
-                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.B). \
+                Button(self.Twindow, text=favoriteList[i], font=self.TempFont, command=self.FavoriteButton). \
                     place(x=410, y=i * 40 - 400)
+                favoriteIndex = i
 
         self.Tcanvas.pack()
         self.Twindow.mainloop()
@@ -79,8 +86,22 @@ class MountainSearch:
         global favoriteList
         favoriteList.append(self.MountainName)
 
-    def B(self):
-        pass
+    def FavoriteButton(self):
+        self.MountainName = favoriteList[favoriteIndex]  # 타이틀에서 산 이름 받아옴
+        self.mntnnm = urllib.parse.quote(self.e.get())
+
+        conn = http.client.HTTPConnection("openapi.forest.go.kr")
+        url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
+        url += "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D"
+        url += "&mntnNm="
+        url += self.mntnnm
+
+        conn.request("GET", url)
+        req = conn.getresponse()
+        self.tree = ElementTree.fromstring(req.read().decode('utf-8'))
+
+        self.Twindow.destroy()  # 기존에 있던 타이틀 윈도우 파괴
+        self.InitResult()  # 결과창 생성
 
     def Animation(self):
         if 0 <= self.n < 2:
