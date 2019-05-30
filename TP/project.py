@@ -30,6 +30,7 @@ class MountainSearch:
 
     def InitTitle(self):       # 타이틀 윈도우
         self.Twindow = Tk()
+        self.Twindow.iconbitmap(default='icon.ico')
 
         self.f1 = PhotoImage(file="anime01.png")
         self.f2 = PhotoImage(file="anime02.png")
@@ -99,6 +100,7 @@ class MountainSearch:
 
     def InitResult(self):        # 결과창 생성
         self.window = Tk()
+        self.window.iconbitmap(default='icon.ico')
         self.window.title("검색 결과")
         self.window.geometry("400x402+700+100")
         self.MapCanvas = Canvas(self.window, width=800, height=402)
@@ -450,6 +452,7 @@ class MountainSearch:
                     pass
 
         self.GraphWindow = Tk()
+        self.GraphWindow.iconbitmap(default='icon.ico')
         self.GraphWindow.title("100대 명산 높이 그래프")
         self.GraphWindow.geometry("1280x680")
         self.GraphCanvas = Canvas(self.GraphWindow, width=1280, height=670)
