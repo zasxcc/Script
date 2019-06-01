@@ -30,12 +30,11 @@ cnt = 0
 
 class MountainSearch:
     def __init__(self):
-        self.nextWindow()
-
-    def nextWindow(self):  # 검색 버튼 누르면 실행되는 함수
         global mntname
-        self.MountainName = mntname
-        self.mntnnm = urllib.parse.quote(mntname)
+        self.nextWindow(mntname)
+
+    def nextWindow(self, mn):  # 검색 버튼 누르면 실행되는 함수
+        self.mntnnm = urllib.parse.quote(mn)
         print(mntname)
         conn = http.client.HTTPConnection("openapi.forest.go.kr")
         url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
@@ -46,7 +45,7 @@ class MountainSearch:
         conn.request("GET", url)
         req = conn.getresponse()
         self.tree = ElementTree.fromstring(req.read().decode('utf-8'))
-        self.tele()
+        self.Information()
 
     def Information(self):
         self.window = Tk()
@@ -78,6 +77,7 @@ class MountainSearch:
         # print(self.text.get(1.0, END))      # 텍스트 받기
         global TEXT
         TEXT = self.text.get(1.0, END)
+        print(TEXT)
         # print(type(self.text.get(1.0, END)))
 
 
@@ -166,42 +166,29 @@ class MountainSearch:
                 self.text.insert(1.0, self.Survey.text)
 
 
-    def tele(self):
-        self.Information()
-
-        updater = Updater(my_token)
-
-        message_handler = MessageHandler(Filters.text, get_message)
-        updater.dispatcher.add_handler(message_handler)
-
-        help_handler = CommandHandler('mnt', help_command)  # 텔레그램에 /mnt 라고하면
-        updater.dispatcher.add_handler(help_handler)
-
-        updater.start_polling(timeout=3, clean=True)
-
-        updater.idle()
-
-    # message reply function
-
-
-def get_message(bot, update):
-    global mntname
-    global cnt
-    global TEXT
-    reply_text = "["
-    reply_text += update.message.text
-    reply_text += "]"
-    reply_text += "는 모르는 명령어 입니다"
-    mntname = str(update.message.text)
-    update.message.reply_text(TEXT)
-    update.message.reply_text(reply_text)
 
     # help reply function
+def get_message(bot, update) :
+    global mntname
+    mntname = update.message.text
 
+    MountainSearch()
 
-def help_command(bot, update):
-    global TEXT
     update.message.reply_text(TEXT)
 
 
-MountainSearch()
+# help reply function
+def help_command(bot, update) :
+    update.message.reply_text("무엇을 도와드릴까요?")
+
+
+updater = Updater(my_token)
+
+message_handler = MessageHandler(Filters.text, get_message)
+updater.dispatcher.add_handler(message_handler)
+
+help_handler = CommandHandler('help', help_command)
+updater.dispatcher.add_handler(help_handler)
+
+updater.start_polling(timeout=3, clean=True)
+updater.idle()
