@@ -132,8 +132,8 @@ class MountainSearch:
         self.window = Tk()
         self.window.iconbitmap(default='icon.ico')
         self.window.title("검색 결과")
-        self.window.geometry("400x432+700+100")
-        self.MapCanvas = Canvas(self.window, width=800, height=432)
+        self.window.geometry("400x402+700+100")
+        self.MapCanvas = Canvas(self.window, width=800, height=402)
         self.MapCanvas.pack()
         self.TempFont = font.Font(size=16, weight='bold', family='Consolas')
 
@@ -148,14 +148,13 @@ class MountainSearch:
         Button(self.window, text="개관", width=10, command=self.Survey).place(x=0, y=210)
         Button(self.window, text="E-Mail 보내기", width=10, command=self.sendMail).place(x=0, y=240)
         Button(self.window, text="지도", width=10, command=self.Map).place(x=0, y=270)
-        Button(self.window, text="지워야할 버튼", width=10).place(x=0, y=300)
-        Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=330)
-        Button(self.window, text="산높이 그래프", width=10, command=self.Graph).place(x=0, y=360)
-        Button(self.window, text="즐겨찾기", width=10, command=self.Favorite).place(x=0, y=390)
+        Button(self.window, text="재검색", width=10, command=self.reSearch).place(x=0, y=300)
+        Button(self.window, text="산높이 그래프", width=10, command=self.Graph).place(x=0, y=330)
+        Button(self.window, text="즐겨찾기", width=10, command=self.Favorite).place(x=0, y=360)
 
         scroll = Scrollbar(self.window)
         self.text = Text(self.window, width=41, height=32, borderwidth=5, relief="ridge", yscrollcommand=scroll.set)
-        scroll.place(x=380, y=0, height=432)
+        scroll.place(x=380, y=0, height=402)
         self.text.place(x=80, y=0)
 
         self.L = []
@@ -463,8 +462,8 @@ class MountainSearch:
         #time.sleep(5)       # 해결된 줄 알았는데 종종 잘려서 그러질 때가 있음
 
         self.image = PhotoImage(file='Searched_Result_Map.gif')
-        self.window.geometry("800x432")
-        self.MapCanvas.create_image(600, 216, image=self.image)
+        self.window.geometry("800x402")
+        self.MapCanvas.create_image(600, 201, image=self.image)
 
         messagebox.showinfo("알림", "지도가 완성되었습니다!")
 
