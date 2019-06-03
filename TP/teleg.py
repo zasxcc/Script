@@ -1,23 +1,12 @@
 # -*- coding: utf-8 -*-
 from tkinter import *
-from tkinter import font
-from tkinter import messagebox
+
 
 import http.client
 from xml.etree import ElementTree
 import urllib.parse
 import urllib.request
 
-import mimetypes
-import mysmtplib
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
-from email import encoders
-import os
-import sys
-import telegram.ext
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler  # import modules
 
 
