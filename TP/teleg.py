@@ -24,13 +24,15 @@ from telegram.ext import Updater, MessageHandler, Filters, CommandHandler  # imp
 my_token = '726303271:AAHtmKdF9PEBV4uNxlY2DVfVuz1fyhuAlug'
 TEXT = ""
 MAIL = ""
-mntname = "한라산"
+mntname = ""
+mntstr = ""
 cnt = 0
 
 
 class MountainSearch:
     def __init__(self):
         global mntname
+        self.window = Tk()
         self.nextWindow(mntname)
 
     def nextWindow(self, mn):  # 검색 버튼 누르면 실행되는 함수
@@ -45,10 +47,16 @@ class MountainSearch:
         conn.request("GET", url)
         req = conn.getresponse()
         self.tree = ElementTree.fromstring(req.read().decode('utf-8'))
-        self.Information()
+        if mntstr == " 상세정보":
+            self.Information()
+        elif mntstr == " 주소":
+            self.Address()
+        elif mntstr == " 대중교통":
+            self.PublicTransportInfo()
+        elif mntstr == " 관광정보":
+            self.TourismInfo()
 
     def Information(self):
-        self.window = Tk()
         self.text = Text(self.window)
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
@@ -77,21 +85,25 @@ class MountainSearch:
         # print(self.text.get(1.0, END))      # 텍스트 받기
         global TEXT
         TEXT = self.text.get(1.0, END)
-        print(TEXT)
+        #print(TEXT)
         # print(type(self.text.get(1.0, END)))
 
 
     def Address(self):
+        self.text = Text(self.window)
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
             self.MountainAddress = item.find("mntninfopoflc")
             self.text.insert(1.0, self.MountainAddress.text + '\n')
+        global TEXT
+        TEXT = self.text.get(1.0, END)
 
     def PublicTransportInfo(self):
+        self.text = Text(self.window)
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
             self.PTInfo = item.find("pbtrninfodscrt")
-            self.L.append(self.PTInfo.text)
+
             self.PTInfo.text = self.PTInfo.text.replace('<BR>', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('br /', '\n')
             self.PTInfo.text = self.PTInfo.text.replace('&lt;', '\n')
@@ -103,7 +115,7 @@ class MountainSearch:
             self.text.insert(1.0, self.PTInfo.text)
 
             self.PTInfo2 = item.find("ptmntrcmmncoursdscrt")
-            self.L.append(self.PTInfo2.text)
+
             self.PTInfo2.text = self.PTInfo2.text.replace('<BR>', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('br /', '\n')
             self.PTInfo2.text = self.PTInfo2.text.replace('&lt;', '\n')
@@ -113,16 +125,16 @@ class MountainSearch:
             self.PTInfo2.text = self.PTInfo2.text.replace('</p>', '\n')
             self.text.insert(1.0, self.PTInfo2.text)
 
-        if self.L[0] == '':
-            self.text.insert(1.0, "대중 교통 정보가 없습니다.")  # 수정 필요
+        print(self.text.get(1.0, END))
+        global TEXT
+        TEXT = self.text.get(1.0, END)
 
-        self.L.clear()
 
     def TourismInfo(self):
+        self.text = Text(self.window)
         self.text.delete(1.0, 1000.0)
         for item in self.tree.iter("item"):
             self.TourInfo = item.find("crcmrsghtnginfodscrt")
-            self.L.append(self.TourInfo.text)
             self.TourInfo.text = self.TourInfo.text.replace('<BR>', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('br /', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('&lt;', '\n')
@@ -131,50 +143,45 @@ class MountainSearch:
             self.TourInfo.text = self.TourInfo.text.replace('nbsp;', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('<p>&', '\n')
             self.TourInfo.text = self.TourInfo.text.replace('</p>', '\n')
+            self.TourInfo.text = self.TourInfo.text.replace('&#xD;', '')
             self.text.insert(1.0, self.TourInfo.text)
 
-        if self.L[0] == '':
-            self.text.insert(1.0, "주변 관광 정보가 없습니다.")
-        self.L.clear()
-
-    def SpecialMountain(self):
-        self.text.delete(1.0, 1000.0)
-        for item in self.tree.iter("item"):
-            self.SM = item.find("hndfmsmtnslctnrson")
-            self.SM.text = self.SM.text.replace('<BR>', '\n')
-            self.SM.text = self.SM.text.replace('br /', '\n')
-            self.SM.text = self.SM.text.replace('&lt;', '\n')
-            self.SM.text = self.SM.text.replace('&gt;', '\n')
-            self.SM.text = self.SM.text.replace('&amp;', '\n')
-            self.SM.text = self.SM.text.replace('nbsp;', '\n')
-            self.text.insert(1.0, self.SM.text)
-
-    def Survey(self):
-        self.text.delete(1.0, 1000.0)
-        for item in self.tree.iter("item"):
-            self.Survey = item.find("mntninfodscrt")
-            self.Survey.text = self.Survey.text.replace('<BR>', '\n')
-            self.Survey.text = self.Survey.text.replace('br /', '\n')
-            self.Survey.text = self.Survey.text.replace('&lt;', '\n')
-            self.Survey.text = self.Survey.text.replace('&gt;', '\n')
-            self.Survey.text = self.Survey.text.replace('&amp;', '\n')
-            self.Survey.text = self.Survey.text.replace('nbsp;', '\n')
-
-            if self.Survey.text == '':
-                print("defeaf")
-            else:
-                self.text.insert(1.0, self.Survey.text)
-
+        global TEXT
+        TEXT = self.text.get(1.0, END)
 
 
     # help reply function
 def get_message(bot, update) :
-    global mntname
-    mntname = update.message.text
+    global mntname, mntstr
+    getMessage = update.message.text
+    flag = 0
+    mntname = ""
+    mntstr = ""
+    for item in getMessage:
+        if item == " ":
+            flag = 1
+        if flag == 1:
+            mntstr += item
+        else:
+            mntname += item
+    print(mntname)
+    if mntstr == " 상세정보":
+        MountainSearch()
+        update.message.reply_text(TEXT)
+    elif mntstr == " 주소":
+        MountainSearch()
+        update.message.reply_text(TEXT)
+    elif mntstr == " 대중교통":
+        MountainSearch()
+        update.message.reply_text(TEXT)
+    elif mntstr == " 관광정보":
+        MountainSearch()
+        update.message.reply_text(TEXT)
+    else:
+        update.message.reply_text("머라고 하는지 모르겟어요")
 
-    MountainSearch()
 
-    update.message.reply_text(TEXT)
+
 
 
 # help reply function
@@ -190,5 +197,5 @@ updater.dispatcher.add_handler(message_handler)
 help_handler = CommandHandler('help', help_command)
 updater.dispatcher.add_handler(help_handler)
 
-updater.start_polling(timeout=3, clean=True)
+updater.start_polling(timeout=5, clean=True)
 updater.idle()
