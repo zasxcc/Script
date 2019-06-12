@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import spam
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
@@ -18,11 +19,9 @@ from email.mime.multipart import MIMEMultipart
 from email import encoders
 import os
 
-
 TEXT= ""
 MAIL = ""
 favoriteList = []
-
 
 class MountainSearch:
     def __init__(self):
@@ -73,11 +72,12 @@ class MountainSearch:
         self.MountainName = self.comboString.get()  # 타이틀에서 산 이름 받아옴
         self.mntnnm = urllib.parse.quote(self.comboString.get())
 
+        #c 연동 부분--------------------------------------------------------------------------------------------------------------------
         conn = http.client.HTTPConnection("openapi.forest.go.kr")
-        url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
-        url += "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D"
-        url += "&mntnNm="
-        url += self.mntnnm
+        url = spam.strlen(url, "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D")
+        url = spam.strlen(url, "&mntnNm=")
+        url = spam.strlen(url, self.mntnnm)
+        # c 연동 부분--------------------------------------------------------------------------------------------------------------------
 
         conn.request("GET", url)
         req = conn.getresponse()
@@ -116,10 +116,13 @@ class MountainSearch:
         self.mntnnm = urllib.parse.quote(self.e.get())
 
         conn = http.client.HTTPConnection("openapi.forest.go.kr")
+
+        # c 연동 부분--------------------------------------------------------------------------------------------------------------------
         url = "http://openapi.forest.go.kr/openapi/service/trailInfoService/getforeststoryservice"
-        url += "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D"
-        url += "&mntnNm="
-        url += self.mntnnm
+        url = spam.strlen(url, "?serviceKey=cuVGydw6yzwC%2B6YdfYKOPzXxvC45arm%2F1M1dpN31ZrgomqlojiWkwCq0jZqneeAvoEZxOqR8WrymypQQvq4hpg%3D%3D")
+        url = spam.strlen(url, "&mntnNm=")
+        url = spam.strlen(url, self.mntnnm)
+        # c 연동 부분--------------------------------------------------------------------------------------------------------------------
 
         conn.request("GET", url)
         req = conn.getresponse()
