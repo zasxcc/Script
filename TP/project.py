@@ -109,7 +109,7 @@ class MountainSearch:
             self.n = 0
 
         self.Tcanvas.create_image(240, 320, image=self.fn)
-        self.Twindow.after(120, self.Animation)
+        self.Twindow.after(90, self.Animation)
 
     def nextWindow(self):           # 검색 버튼 누르면 실행되는 함수
         self.MountainName = self.e.get()       # 타이틀에서 산 이름 받아옴
